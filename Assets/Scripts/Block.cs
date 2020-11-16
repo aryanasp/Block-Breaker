@@ -4,23 +4,30 @@ using UnityEngine;
 
 public class Block : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField]
+    AudioClip breakSound;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    //cached reference
+    Level level;
 
+    private void Start()
+    {
+        level = FindObjectOfType<Level>();
+        level.CountBreakableBlocks();
+    }
     private void OnCollisionEnter2D(Collision2D other)
     {
         if(other.gameObject.tag == "Ball")
         {
-            Destroy(gameObject, 0.5f);
+            DestroyBlock();
         }
+    }
+
+    private void DestroyBlock()
+    {
+        AudioSource.PlayClipAtPoint(breakSound, Camera.main.transform.position);
+        level.DestoryedBlock();
+        level.IsLevelFinished();
+        Destroy(gameObject);
     }
 }
